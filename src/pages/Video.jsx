@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { fetchFromAPI } from '../utils/api';
 import ReactPlayer from 'react-player';
+
+import { CiChat1 } from "react-icons/ci";
+import { CiStar } from "react-icons/ci";
+import { CiRead } from "react-icons/ci";
 
 const Video = () => {
     const { videoId } = useParams();
     const [videoDetail, setVideoDetail] = useState(null);
+    const [comments, setComments] = useState([]);
+    
 
     useEffect(() => {
         fetchFromAPI(`videos?part=snippet,statistics&id=${videoId}`)
@@ -33,13 +39,31 @@ const Video = () => {
                             {videoDetail.snippet.title}
                         </h2>
                         <div className='video__channel'>
-                            <div className='id'></div>
+                            <div className='id'>
+                                <Link to={`/channel/${videoDetail.snippet.channelId}`}>{videoDetail.snippet.channelTitle}</Link>
+                            </div>
                             <div className='count'>
-                                <span className='view'>{videoDetail.statistics.viewCount}</span>
-                                <span className='like'>{videoDetail.statistics.likeCount}</span>
-                                <span className='comment'>{videoDetail.statistics.commentCount}</span>
+                                <span className='view'><CiChat1 />{videoDetail.statistics.viewCount}</span>
+                                <span className='like'><CiStar />{videoDetail.statistics.likeCount}</span>
+                                <span className='comment'><CiRead />{videoDetail.statistics.commentCount}</span>
                             </div>
                         </div>
+                    </div>
+                    <div className='desc__channel'>
+                        {videoDetail.snippet.description}
+                    </div>
+                            
+                    {/* Comment section */}
+                    <div className="video__comment">
+                        <h3>댓글</h3>
+                        <ul>
+                            {comments.map((comment, index) => (
+                                <li key={index}>
+                                    <div className="comment__author">{comment.snippet.topLevelComment.snippet.authorDisplayName}</div>
+                                    <div className="comment__text">{comment.snippet.topLevelComment.snippet.textDisplay}</div>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             )}

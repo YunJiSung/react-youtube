@@ -19,7 +19,20 @@ const Video = () => {
                 setVideoDetail(data.items[0]);
                 console.log(data);
             });
+             // Fetch video comments
+            fetchComments(videoId);
     }, [videoId]);
+
+    const fetchComments = (videoId) => {
+        // Use the YouTube Data API to fetch comments for the video
+        // Replace 'YOUR_API_KEY' with your actual YouTube Data API key
+        const apiKey = 'YOUR_API_KEY';
+        fetchFromAPI(`commentThreads?part=snippet&videoId=${videoId}&key=${apiKey}`)
+            .then((data) => {
+                setComments(data.items);
+            });
+    };
+
 
     return (
         <section id='videoViewPage'>
